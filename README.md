@@ -2,13 +2,17 @@
 
 Install Chameo on an Apple Silicon Mac running macOS 26 or newer.
 
+The cask clears quarantine from the installed `Chameo.app`, skipping the usual
+first-launch Gatekeeper check. Chameo is ad-hoc signed.
+
 ```sh
 brew install --cask robertu7/tap/chameo
 ```
 
-Chameo currently uses ad-hoc signing and is awaiting Apple notarization.
-If macOS blocks the first launch, approve Chameo in System Settings → Privacy &
-Security. Approve Camera and Photos access when prompted.
+If an earlier Homebrew install still shows the Gatekeeper warning, run
+`brew update`, then `brew reinstall --cask robertu7/tap/chameo` to apply the
+current cask.
+Approve Camera and Photos access when prompted.
 
 Chameo supports in-app updates through Sparkle. To upgrade with Homebrew, run
 `brew upgrade --cask robertu7/tap/chameo`.
