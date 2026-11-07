@@ -10,7 +10,8 @@ brew install --cask robertu7/tap/chameo
 ```
 
 If an earlier Homebrew install still shows the Gatekeeper warning, run
-`brew reinstall --cask robertu7/tap/chameo` to apply the current cask.
+`brew update`, then `brew reinstall --cask robertu7/tap/chameo` to apply the
+current cask.
 Approve Camera and Photos access when prompted.
 
 Chameo supports in-app updates through Sparkle. To upgrade with Homebrew, run
