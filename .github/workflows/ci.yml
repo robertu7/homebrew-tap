@@ -31,6 +31,25 @@ jobs:
           bundle="$RUNNER_TEMP/Applications/Chameo.app"
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$bundle/Contents/Info.plist")" = com.robertu.Chameo
           codesign --verify --deep --strict "$bundle"
+          attributes="$(/usr/bin/xattr -rs "$bundle")"
+          if grep -q ': com\.apple\.quarantine$' <<< "$attributes"; then
+            echo "Chameo.app still has a quarantine attribute after installation." >&2
+            exit 1
+          fi
+
+      - name: Test first launch
+        timeout-minutes: 1
+        run: |
+          trap '/usr/bin/pkill -x Chameo || true' EXIT
+          /usr/bin/open -g "$RUNNER_TEMP/Applications/Chameo.app"
+          for attempt in {1..10}; do
+            if /usr/bin/pgrep -x Chameo; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Chameo did not start after installation." >&2
+          exit 1
 
       - name: Audit cask
         run: brew audit --cask --online robertu7/tap/chameo

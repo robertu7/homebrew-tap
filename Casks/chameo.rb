@@ -18,6 +18,14 @@ cask "chameo" do
 
   app "Chameo.app"
 
+  postflight_steps(default_base: :appdir) do
+    run "/usr/bin/xattr",
+        args:           ["-drs", "com.apple.quarantine", "Chameo.app"],
+        chdir:          ".",
+        writable_paths: ["Chameo.app"],
+        must_succeed:   false
+  end
+
   uninstall quit: "com.robertu.Chameo"
 
   zap trash: [
@@ -28,7 +36,8 @@ cask "chameo" do
   ]
 
   caveats <<~EOS
-    Chameo currently uses ad-hoc signing and is awaiting Apple notarization.
-    If macOS blocks the first launch, approve Chameo in System Settings > Privacy & Security.
+    This cask clears quarantine from the installed Chameo.app, skipping the usual
+    first-launch Gatekeeper check. Chameo is ad-hoc signed.
+    If macOS blocks launch, choose Open Anyway in System Settings > Privacy & Security.
   EOS
 end
