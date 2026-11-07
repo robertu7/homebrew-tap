@@ -27,12 +27,13 @@ jobs:
 
       - name: Test installation
         run: |
-          brew install --cask --appdir="$RUNNER_TEMP/Applications" robertu7/tap/chameo
+          brew --version
+          brew install --debug --verbose --cask --appdir="$RUNNER_TEMP/Applications" robertu7/tap/chameo
           bundle="$RUNNER_TEMP/Applications/Chameo.app"
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$bundle/Contents/Info.plist")" = com.robertu.Chameo
           codesign --verify --deep --strict "$bundle"
           attributes="$(/usr/bin/xattr -rs "$bundle")"
-          if grep -q ': com\.apple\.quarantine$' <<< "$attributes"; then
+          if grep ': com\.apple\.quarantine$' <<< "$attributes"; then
             echo "Chameo.app still has a quarantine attribute after installation." >&2
             exit 1
           fi
