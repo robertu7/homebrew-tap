@@ -19,7 +19,9 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Tap checkout
-        run: brew tap robertu7/tap "$GITHUB_WORKSPACE"
+        run: |
+          brew tap robertu7/tap "$GITHUB_WORKSPACE"
+          brew trust --cask robertu7/tap/chameo
 
       - name: Audit cask
         run: |
