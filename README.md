@@ -1,4 +1,4 @@
-# Robert's Homebrew Tap
+# Homebrew Tap
 
 Install Chameo on an Apple Silicon Mac running macOS 26 or newer.
 
