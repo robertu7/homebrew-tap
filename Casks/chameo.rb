@@ -18,11 +18,10 @@ cask "chameo" do
 
   app "Chameo.app"
 
-  postflight_steps(default_base: :appdir) do
+  postflight_steps do
     run "/usr/bin/xattr",
-        args:           ["-drs", "com.apple.quarantine", "Chameo.app"],
-        chdir:          ".",
-        writable_paths: ["Chameo.app"]
+        args:           ["-drs", "com.apple.quarantine", "{{appdir}}/Chameo.app"],
+        writable_paths: ["{{appdir}}/Chameo.app"]
   end
 
   uninstall quit: "com.robertu.Chameo"
