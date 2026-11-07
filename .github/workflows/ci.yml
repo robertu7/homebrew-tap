@@ -25,18 +25,19 @@ jobs:
       - name: Check style
         run: brew style Casks/chameo.rb
 
-      - name: Test installation
+      - name: Test installation and reinstallation
         run: |
-          brew --version
-          brew install --debug --verbose --cask --appdir="$RUNNER_TEMP/Applications" robertu7/tap/chameo
-          bundle="$RUNNER_TEMP/Applications/Chameo.app"
-          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$bundle/Contents/Info.plist")" = com.robertu.Chameo
-          codesign --verify --deep --strict "$bundle"
-          attributes="$(/usr/bin/xattr -rs "$bundle")"
-          if grep ': com\.apple\.quarantine$' <<< "$attributes"; then
-            echo "Chameo.app still has a quarantine attribute after installation." >&2
-            exit 1
-          fi
+          for operation in install reinstall; do
+            brew "$operation" --cask --appdir="$RUNNER_TEMP/Applications" robertu7/tap/chameo
+            bundle="$RUNNER_TEMP/Applications/Chameo.app"
+            test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$bundle/Contents/Info.plist")" = com.robertu.Chameo
+            codesign --verify --deep --strict "$bundle"
+            attributes="$(/usr/bin/xattr -rs "$bundle")"
+            if grep -q ': com\.apple\.quarantine$' <<< "$attributes"; then
+              echo "Chameo.app still has a quarantine attribute after $operation." >&2
+              exit 1
+            fi
+          done
 
       - name: Test first launch
         timeout-minutes: 1
