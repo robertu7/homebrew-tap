@@ -22,8 +22,7 @@ cask "chameo" do
     run "/usr/bin/xattr",
         args:           ["-drs", "com.apple.quarantine", "Chameo.app"],
         chdir:          ".",
-        writable_paths: ["Chameo.app"],
-        must_succeed:   false
+        writable_paths: ["Chameo.app"]
   end
 
   uninstall quit: "com.robertu.Chameo"
