@@ -13,20 +13,17 @@ jobs:
   chameo:
     runs-on: macos-26
     env:
+      HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
       HOMEBREW_NO_AUTO_UPDATE: "1"
     steps:
       - name: Check out tap
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Tap checkout
-        run: |
-          brew tap robertu7/tap "$GITHUB_WORKSPACE"
-          brew trust --cask robertu7/tap/chameo
+        run: brew tap robertu7/tap "$GITHUB_WORKSPACE"
 
-      - name: Audit cask
-        run: |
-          brew style Casks/chameo.rb
-          brew audit --cask --online robertu7/tap/chameo
+      - name: Check style
+        run: brew style Casks/chameo.rb
 
       - name: Test installation
         run: |
@@ -34,3 +31,6 @@ jobs:
           bundle="$RUNNER_TEMP/Applications/Chameo.app"
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$bundle/Contents/Info.plist")" = com.robertu.Chameo
           codesign --verify --deep --strict "$bundle"
+
+      - name: Audit cask
+        run: brew audit --cask --online robertu7/tap/chameo
